@@ -50,8 +50,8 @@ protected:
   // Model that sets and retrieves the PaintbrushSettings
   typedef AbstractPropertyModel<PaintbrushSettings> PaintbrushSettingsStructModel;
   SmartPtr<PaintbrushSettingsStructModel> m_PaintbrushSettingsModel;
-  PaintbrushSettings GetPaintbrushSettings();
-  void SetPaintbrushSettings(PaintbrushSettings ps);
+  virtual PaintbrushSettings GetPaintbrushSettings();
+  virtual void SetPaintbrushSettings(PaintbrushSettings ps);
 
   SmartPtr<AbstractPaintbrushShapeModel> m_PaintbrushShapeModel;  
   SmartPtr<AbstractSimpleBooleanProperty> m_VolumetricBrushModel;

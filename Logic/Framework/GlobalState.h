@@ -124,7 +124,8 @@ enum ToolbarModeType
   PAINTBRUSH_MODE,
   ROI_MODE,
   ANNOTATION_MODE,
-  REGISTRATION_MODE
+  REGISTRATION_MODE,
+  LABEL_PAINT_MODE
 };
 
 enum ToolbarMode3DType
@@ -169,6 +170,16 @@ struct PaintbrushSettings
   bool chase;
 
   PaintbrushWatershedSettings watershed;
+};
+
+/** Label paint (connected component relabeling) settings */
+struct LabelPaintSettings
+{
+  // Brush footprint settings (shape, radius, 3D, isotropic, chase)
+  PaintbrushSettings brush;
+
+  // Whether connected components use 26-connectivity (true) or 6-connectivity (false)
+  bool fully_connected;
 };
 
 /** Annotation settings */
@@ -306,6 +317,12 @@ public:
 
   /** Set the current paintbrush settings */
   irisSetMacro(PaintbrushSettings, const PaintbrushSettings &);
+
+  /** Get the current label paint settings */
+  irisGetMacro(LabelPaintSettings, const LabelPaintSettings &);
+
+  /** Set the current label paint settings */
+  irisSetMacro(LabelPaintSettings, const LabelPaintSettings &);
 
   /** Get the current annotation settings */
   irisGetMacro(AnnotationSettings, const AnnotationSettings &);
@@ -553,6 +570,9 @@ private:
 
   // Paintbrush settings
   PaintbrushSettings m_PaintbrushSettings;
+
+  // Label paint settings
+  LabelPaintSettings m_LabelPaintSettings;
 
   // Initial path for opening images
   SmartPtr<ConcreteSimpleStringProperty> m_InitialDirectoryModel;

@@ -63,6 +63,8 @@ class ReorientImageModel;
 class DisplayLayoutModel;
 class PaintbrushModel;
 class PaintbrushSettingsModel;
+class LabelPaintModel;
+class LabelPaintSettingsModel;
 class PolygonSettingsModel;
 class LayerGeneralPropertiesModel;
 class SynchronizationModel;
@@ -176,6 +178,12 @@ public:
     return m_PaintbrushModel[i];
   }
 
+  /** Get the label paint (connected component relabel) model for each slice */
+  LabelPaintModel *GetLabelPaintModel(unsigned int i) const
+  {
+    return m_LabelPaintModel[i];
+  }
+
   /** Get the annotation model for each slice */
   AnnotationModel *GetAnnotationModel(unsigned int i) const
   {
@@ -223,6 +231,9 @@ public:
 
   /** Model for managing paintbrush settings */
   irisGetMacro(PaintbrushSettingsModel, PaintbrushSettingsModel *)
+
+  /** Model for managing label paint settings */
+  irisGetMacro(LabelPaintSettingsModel, LabelPaintSettingsModel *)
 
   /** Model for managing polygon settings */
   irisGetMacro(PolygonSettingsModel, PolygonSettingsModel *)
@@ -392,6 +403,9 @@ protected:
   // Models for paintbrush drawing
   SmartPtr<PaintbrushModel> m_PaintbrushModel[3];
 
+  // Models for label paint (connected component relabeling)
+  SmartPtr<LabelPaintModel> m_LabelPaintModel[3];
+
   // Models for annotation
   SmartPtr<AnnotationModel> m_AnnotationModel[3];
 
@@ -436,6 +450,9 @@ protected:
 
   // Paintbrush settings
   SmartPtr<PaintbrushSettingsModel> m_PaintbrushSettingsModel;
+
+  // Label paint settings
+  SmartPtr<LabelPaintSettingsModel> m_LabelPaintSettingsModel;
 
   // Polygon settings
   SmartPtr<PolygonSettingsModel> m_PolygonSettingsModel;

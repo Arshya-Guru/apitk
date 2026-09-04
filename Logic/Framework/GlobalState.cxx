@@ -96,6 +96,11 @@ GlobalState
   m_PaintbrushSettings.watershed.level = 0.2;
   m_PaintbrushSettings.watershed.smooth_iterations = 15;
 
+  // Set label paint defaults
+  m_LabelPaintSettings.brush = m_PaintbrushSettings;
+  m_LabelPaintSettings.brush.shape = PAINTBRUSH_ROUND;
+  m_LabelPaintSettings.fully_connected = false;
+
 
   m_PolygonDrawingContextMenuModel = NewSimpleConcreteProperty(false);
 

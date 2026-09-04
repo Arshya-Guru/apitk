@@ -203,13 +203,13 @@ QToolButton:checked {
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="btnPolygon">
+             <widget class="QToolButton" name="btnLabelPaint">
               <property name="text">
                <string>...</string>
               </property>
               <property name="icon">
                <iconset resource="../Resources/SNAPResources.qrc">
-                <normaloff>:/root/poly.gif</normaloff>:/root/poly.gif</iconset>
+                <normaloff>:/root/label_paint.png</normaloff>:/root/label_paint.png</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -615,7 +615,7 @@ QToolButton {
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="btnPolygonInspector">
+             <widget class="QToolButton" name="btnLabelPaintInspector">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -623,7 +623,7 @@ QToolButton {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Polygon Tool Inspector&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Adjust settings associated with the polygon tool.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Label Paint Tool Inspector&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Adjust settings associated with the label paint tool.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="styleSheet">
                <string notr="true"/>
@@ -633,7 +633,7 @@ QToolButton {
               </property>
               <property name="icon">
                <iconset resource="../Resources/SNAPResources.qrc">
-                <normaloff>:/root/poly.gif</normaloff>:/root/poly.gif</iconset>
+                <normaloff>:/root/label_paint.png</normaloff>:/root/label_paint.png</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -765,7 +765,7 @@ QToolButton {
            </widget>
            <widget class="SnakeToolROIPanel" name="pageSnakeTool"/>
            <widget class="PaintbrushToolPanel" name="pagePaintbrushTool"/>
-           <widget class="PolygonToolPanel" name="pagePolygonTool"/>
+           <widget class="LabelPaintToolPanel" name="pageLabelPaintTool"/>
            <widget class="AnnotationToolPanel" name="pageAnnotationTool"/>
            <widget class="QWidget" name="pageBlank"/>
           </widget>
@@ -979,9 +979,9 @@ QToolBar {
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>PolygonToolPanel</class>
+   <class>LabelPaintToolPanel</class>
    <extends>QWidget</extends>
-   <header>PolygonToolPanel.h</header>
+   <header>LabelPaintToolPanel.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

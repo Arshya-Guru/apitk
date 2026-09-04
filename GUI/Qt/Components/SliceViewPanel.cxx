@@ -42,6 +42,8 @@
 #include "PolygonDrawingInteractionMode.h"
 #include "SnakeROIInteractionMode.h"
 #include "PaintbrushInteractionMode.h"
+#include "LabelPaintInteractionMode.h"
+#include "LabelPaintModel.h"
 #include "AnnotationInteractionMode.h"
 #include "RegistrationInteractionMode.h"
 
@@ -74,6 +76,7 @@ public:
     m_PolygonMode = new PolygonDrawingInteractionMode(sliceView, canvasWidget);
     m_SnakeROIMode = new SnakeROIInteractionMode(sliceView, canvasWidget);
     m_PaintbrushMode = new PaintbrushInteractionMode(sliceView, canvasWidget);
+    m_LabelPaintMode = new LabelPaintInteractionMode(sliceView, canvasWidget);
     m_AnnotationMode = new AnnotationInteractionMode(sliceView, canvasWidget);
     m_RegistrationMode = new RegistrationInteractionMode(sliceView, canvasWidget);
 
@@ -82,6 +85,7 @@ public:
     m_DecorationRenderer = SliceWindowDecorationRenderer::New();
     m_PolygonDrawingRenderer = PolygonDrawingRenderer::New();
     m_PaintbrushRenderer = PaintbrushRenderer::New();
+    m_LabelPaintRenderer = PaintbrushRenderer::New();
     m_AnnotationRenderer = AnnotationRenderer::New();
     m_DeformationGridRenderer = DeformationGridRenderer::New();
     m_SnakeModeRenderer = SnakeModeRenderer::New();
@@ -91,6 +95,7 @@ public:
     // Configure mode map
     m_ToolbarModeMap[POLYGON_DRAWING_MODE] = std::make_pair(m_PolygonMode, nullptr);
     m_ToolbarModeMap[PAINTBRUSH_MODE] = std::make_pair(m_PaintbrushMode, m_PaintbrushRenderer);
+    m_ToolbarModeMap[LABEL_PAINT_MODE] = std::make_pair(m_LabelPaintMode, m_LabelPaintRenderer);
     m_ToolbarModeMap[ANNOTATION_MODE] = std::make_pair(m_AnnotationMode, m_AnnotationRenderer);
     m_ToolbarModeMap[REGISTRATION_MODE] = std::make_pair(m_RegistrationMode, m_RegistrationRenderer);
     m_ToolbarModeMap[ROI_MODE] = std::make_pair(m_SnakeROIMode, m_SnakeROIRenderer);
@@ -163,6 +168,7 @@ public:
     m_PolygonMode->SetModel(model->GetPolygonDrawingModel(index));
     m_SnakeROIMode->SetModel(model->GetSnakeROIModel(index));
     m_PaintbrushMode->SetModel(model->GetPaintbrushModel(index));
+    m_LabelPaintMode->SetModel(model->GetLabelPaintModel(index));
     m_AnnotationMode->SetModel(model->GetAnnotationModel(index));
     m_RegistrationMode->SetModel(model->GetInteractiveRegistrationModel(index));
 
@@ -170,6 +176,7 @@ public:
     m_CrosshairsRenderer->SetModel(model->GetSliceModel(index));
     m_DecorationRenderer->SetModel(model->GetSliceModel(index));
     m_PaintbrushRenderer->SetModel(model->GetPaintbrushModel(index));
+    m_LabelPaintRenderer->SetModel(model->GetLabelPaintModel(index));
     m_PolygonDrawingRenderer->SetModel(model->GetPolygonDrawingModel(index));
     m_AnnotationRenderer->SetModel(model->GetAnnotationModel(index));
     m_DeformationGridRenderer->SetModel(model->GetSliceModel(index)->GetDeformationGridModel());
@@ -191,6 +198,7 @@ private:
   PolygonDrawingInteractionMode *m_PolygonMode;
   SnakeROIInteractionMode       *m_SnakeROIMode;
   PaintbrushInteractionMode     *m_PaintbrushMode;
+  LabelPaintInteractionMode     *m_LabelPaintMode;
   AnnotationInteractionMode     *m_AnnotationMode;
   RegistrationInteractionMode   *m_RegistrationMode;
 
@@ -198,6 +206,7 @@ private:
   SmartPtr<CrosshairsRenderer>            m_CrosshairsRenderer;
   SmartPtr<PolygonDrawingRenderer>        m_PolygonDrawingRenderer;
   SmartPtr<PaintbrushRenderer>            m_PaintbrushRenderer;
+  SmartPtr<PaintbrushRenderer>            m_LabelPaintRenderer;
   SmartPtr<AnnotationRenderer>            m_AnnotationRenderer;
   SmartPtr<DeformationGridRenderer>       m_DeformationGridRenderer;
   SmartPtr<SnakeModeRenderer>             m_SnakeModeRenderer;
@@ -370,6 +379,10 @@ void SliceViewPanel::Initialize(GlobalUIModel *model, unsigned int index)
 
   // Listen to paintbrush motion
   connectITK(m_GlobalUI->GetPaintbrushModel(index),
+             PaintbrushModel::PaintbrushMovedEvent());
+
+  // Listen to label paint brush motion
+  connectITK(m_GlobalUI->GetLabelPaintModel(index),
              PaintbrushModel::PaintbrushMovedEvent());
 
   // Listen to annotation changes

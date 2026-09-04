@@ -583,7 +583,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </property>
      <addaction name="actionCrosshair"/>
      <addaction name="actionZoomPan"/>
-     <addaction name="actionPolygon"/>
+     <addaction name="actionLabelPaint"/>
      <addaction name="actionPaintbrush"/>
      <addaction name="actionSnake"/>
      <addaction name="actionAnnotation"/>
@@ -1178,6 +1178,21 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Polygon Drawing Mode (3)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Used to perform manual segmentation by drawing and filling polygons in the three orthogonal image slices. &lt;br/&gt;&lt;/p&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot;&gt;&lt;tr&gt;&lt;td style=&quot; padding-left:5; padding-right:5; padding-top:0; padding-bottom:0;&quot;&gt;&lt;p&gt;&lt;img src=&quot;:/root/icons8_mouse_left_click_16.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; padding-left:5; padding-right:5; padding-top:0; padding-bottom:0;&quot;&gt;&lt;p&gt;Add points to the polygon and edit completed polygon&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot; padding-left:5; padding-right:5; padding-top:0; padding-bottom:0;&quot;&gt;&lt;p&gt;&lt;img src=&quot;:/root/icons8_mouse_right_click_16.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; padding-left:5; padding-right:5; padding-top:0; padding-bottom:0;&quot;&gt;&lt;p&gt;Hold and drag to zoom in / zoom out.&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot; padding-left:5; padding-right:5; padding-top:0; padding-bottom:0;&quot;&gt;&lt;p&gt;&lt;img src=&quot;:/root/icons8_mouse_scrolling_16.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; padding-left:5; padding-right:5; padding-top:0; padding-bottom:0;&quot;&gt;&lt;p&gt;Scroll through image slices.&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionLabelPaint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/SNAPResources.qrc">
+     <normaloff>:/root/label_paint.png</normaloff>:/root/label_paint.png</iconset>
+   </property>
+   <property name="text">
+    <string>Label Paint Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Label Paint Mode (3)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Relabel entire 3D connected components with the active label by clicking on them with a brush.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>3</string>

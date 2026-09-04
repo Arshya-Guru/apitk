@@ -41,7 +41,7 @@ private slots:
   void on_btnSyncInspector_clicked(bool checked);
 
 
-  void on_btnPolygonInspector_clicked(bool checked);
+  void on_btnLabelPaintInspector_clicked(bool checked);
 
   void on_btnPaintbrushInspector_clicked(bool checked);
 

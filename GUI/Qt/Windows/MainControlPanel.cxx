@@ -93,7 +93,7 @@ MainControlPanel::MainControlPanel(MainImageWindow *parent) :
   // Connect tool buttons to actions
   ui->btnCrosshair->setDefaultAction(FindUpstreamAction(this, "actionCrosshair"));
   ui->btnZoom->setDefaultAction(FindUpstreamAction(this, "actionZoomPan"));
-  ui->btnPolygon->setDefaultAction(FindUpstreamAction(this, "actionPolygon"));
+  ui->btnLabelPaint->setDefaultAction(FindUpstreamAction(this, "actionLabelPaint"));
   ui->btnPaintbrush->setDefaultAction(FindUpstreamAction(this, "actionPaintbrush"));
   ui->btnAnnotation->setDefaultAction(FindUpstreamAction(this, "actionAnnotation"));
   ui->btnSnake->setDefaultAction(FindUpstreamAction(this, "actionSnake"));
@@ -107,7 +107,7 @@ MainControlPanel::MainControlPanel(MainImageWindow *parent) :
 
   // Hide the buttons that show up and disappear
   ui->btnPaintbrushInspector->setVisible(false);
-  ui->btnPolygonInspector->setVisible(false);
+  ui->btnLabelPaintInspector->setVisible(false);
   ui->btnSnakeInspector->setVisible(false);
   ui->btnAnnotateInspector->setVisible(false);
 
@@ -141,7 +141,7 @@ void MainControlPanel::SetModel(GlobalUIModel *model)
   ui->pageSyncInspector->SetModel(m_Model->GetSynchronizationModel());
   ui->pagePaintbrushTool->SetModel(m_Model->GetPaintbrushSettingsModel());
   ui->pageSnakeTool->SetModel(m_Model);
-  ui->pagePolygonTool->SetModel(m_Model);
+  ui->pageLabelPaintTool->SetModel(m_Model->GetLabelPaintSettingsModel());
   ui->pageAnnotationTool->SetModel(m_Model);
 
   LabelSelectionButtonPopupMenu *ls_menu
@@ -170,12 +170,14 @@ void MainControlPanel::onModelUpdate(const EventBucket &bucket)
 {
   // A static array of widget/mode mappings
   static QToolButton *mode_inspector_btn[] = {
-    ui->btnCursorInspector,
-    ui->btnZoomInspector,
-    ui->btnPolygonInspector,
-    ui->btnPaintbrushInspector,
-    ui->btnSnakeInspector,
-    ui->btnAnnotateInspector,
+    ui->btnCursorInspector,     // CROSSHAIRS_MODE
+    ui->btnZoomInspector,       // NAVIGATION_MODE
+    NULL,                       // POLYGON_DRAWING_MODE (not exposed in the GUI)
+    ui->btnPaintbrushInspector, // PAINTBRUSH_MODE
+    ui->btnSnakeInspector,      // ROI_MODE
+    ui->btnAnnotateInspector,   // ANNOTATION_MODE
+    NULL,                       // REGISTRATION_MODE
+    ui->btnLabelPaintInspector, // LABEL_PAINT_MODE
     NULL
   };
 
@@ -186,7 +188,7 @@ void MainControlPanel::onModelUpdate(const EventBucket &bucket)
     // Update the list of displayed buttons
     ToolbarModeType mode = gs->GetToolbarMode();
     ui->btnPaintbrushInspector->setVisible(mode == PAINTBRUSH_MODE);
-    ui->btnPolygonInspector->setVisible(mode == POLYGON_DRAWING_MODE);
+    ui->btnLabelPaintInspector->setVisible(mode == LABEL_PAINT_MODE);
     ui->btnSnakeInspector->setVisible(mode == ROI_MODE);
     ui->btnAnnotateInspector->setVisible(mode == ANNOTATION_MODE);
 
@@ -271,12 +273,12 @@ void MainControlPanel::on_btnSyncInspector_clicked(bool checked)
 
 
 
-void MainControlPanel::on_btnPolygonInspector_clicked(bool checked)
+void MainControlPanel::on_btnLabelPaintInspector_clicked(bool checked)
 {
   if(checked)
     {
-    ui->stack->setCurrentWidget(ui->pagePolygonTool);
-    ui->grpInspector->setTitle(tr("Polygon Inspector"));
+    ui->stack->setCurrentWidget(ui->pageLabelPaintTool);
+    ui->grpInspector->setTitle(tr("Label Paint Inspector"));
     }
 
 }

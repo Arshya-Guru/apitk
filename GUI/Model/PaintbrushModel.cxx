@@ -109,7 +109,7 @@ bool
 PaintbrushModel ::ProcessPushEvent(const Vector3d &xSlice, const Vector2ui &gridCell, bool reverse_mode)
 {
   // Get the paintbrush properties (TODO: should we own them?)
-  PaintbrushSettings pbs = m_Parent->GetDriver()->GetGlobalState()->GetPaintbrushSettings();
+  PaintbrushSettings pbs = GetEffectivePaintbrushSettings();
 
   // Store the unique ID of the layer in context
   ImageWrapperBase *layer = m_Parent->GetLayerForNthTile(gridCell[0], gridCell[1]);

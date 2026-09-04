@@ -185,6 +185,20 @@ MainImageWindow::MainImageWindow(QWidget *parent) :
   ui->actionSnake->setActionGroup(grpToolbarMain);
   ui->actionAnnotation->setActionGroup(grpToolbarMain);
 
+  // The action group is coupled to the ToolbarModeType enum by index, so the
+  // order here must match the enum. REGISTRATION_MODE has no toolbar action,
+  // so an invisible placeholder holds its slot, followed by label paint mode.
+  QAction *actionRegistrationPlaceholder = new QAction(this);
+  actionRegistrationPlaceholder->setCheckable(true);
+  actionRegistrationPlaceholder->setVisible(false);
+  actionRegistrationPlaceholder->setActionGroup(grpToolbarMain);
+  ui->actionLabelPaint->setActionGroup(grpToolbarMain);
+
+  // Polygon mode is replaced by label paint mode in this build. The action
+  // stays in the group to keep the enum indexing intact but is never shown.
+  ui->actionPolygon->setVisible(false);
+  ui->actionPolygon->setShortcut(QKeySequence());
+
   QActionGroup *grpToolbar3D = new QActionGroup(this);
   ui->action3DTrackball->setActionGroup(grpToolbar3D);
   ui->action3DCrosshair->setActionGroup(grpToolbar3D);
@@ -400,6 +414,20 @@ MainImageWindow::MainImageWindow(QWidget *parent) :
   ttPolygon.addMouseAction(
     ModeTooltipBuilder::SCROLL, tr("Scroll through image components"), mod_shift);
   ui->actionPolygon->setToolTip(ttPolygon.makeTooltip());
+
+  ModeTooltipBuilder ttLabelPaint(
+    tr("Label Paint Mode (3)"),
+    tr("Used to relabel whole 3D connected components. Every label under the brush that "
+       "passes the \"paint over\" filter has its entire connected component replaced "
+       "with the active label."));
+  ttLabelPaint.addMouseAction(ModeTooltipBuilder::LMB,
+                              tr("<b>Relabel connected components under the brush</b>"));
+  ttLabelPaint.addMouseAction(ModeTooltipBuilder::RMB, tr("Zoom in and out (hold & drag)"));
+  ttLabelPaint.addMouseAction(ModeTooltipBuilder::LMB, tr("Place and move the 3D cursor"), mod_option);
+  ttLabelPaint.addMouseAction(ModeTooltipBuilder::SCROLL, tr("Scroll through image slices"));
+  ttLabelPaint.addMouseAction(
+    ModeTooltipBuilder::SCROLL, tr("Scroll through image components"), mod_shift);
+  ui->actionLabelPaint->setToolTip(ttLabelPaint.makeTooltip());
 
   ModeTooltipBuilder ttPaintbrush(
     tr("Paintbrush Mode (4)"),
@@ -643,6 +671,7 @@ void MainImageWindow::Initialize(GlobalUIModel *model)
   activateOnFlag(ui->actionPolygon, m_Model, UIF_BASEIMG_LOADED);
   activateOnFlag(ui->actionSnake, m_Model, UIF_IRIS_WITH_BASEIMG_LOADED);
   activateOnFlag(ui->actionPaintbrush, m_Model, UIF_BASEIMG_LOADED);
+  activateOnFlag(ui->actionLabelPaint, m_Model, UIF_BASEIMG_LOADED);
   activateOnFlag(ui->actionAnnotation, m_Model, UIF_BASEIMG_LOADED);
 
   activateOnFlag(ui->action3DCrosshair, m_Model, UIF_BASEIMG_LOADED);

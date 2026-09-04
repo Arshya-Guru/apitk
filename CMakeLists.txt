@@ -521,6 +521,8 @@ SET(UI_GENERIC_CXX
   GUI/Model/OrthogonalSliceCursorNavigationModel.cxx
   GUI/Model/PaintbrushModel.cxx
   GUI/Model/PaintbrushSettingsModel.cxx
+  GUI/Model/LabelPaintModel.cxx
+  GUI/Model/LabelPaintSettingsModel.cxx
   GUI/Model/PolygonDrawingModel.cxx
   GUI/Model/PolygonSettingsModel.cxx
   GUI/Model/RegistrationModel.cxx
@@ -602,6 +604,8 @@ SET(UI_GENERIC_HEADERS
   GUI/Model/OrthogonalSliceCursorNavigationModel.h
   GUI/Model/PaintbrushModel.h
   GUI/Model/PaintbrushSettingsModel.h
+  GUI/Model/LabelPaintModel.h
+  GUI/Model/LabelPaintSettingsModel.h
   GUI/Model/PolygonSettingsModel.h
   GUI/Model/PolygonDrawingModel.h
   GUI/Model/RegistrationModel.h
@@ -680,6 +684,7 @@ SET(UI_QT_CXX
   GUI/Qt/Components/MetadataInspector.cxx
   GUI/Qt/Components/GeneralLayerInspector.cxx
   GUI/Qt/Components/PaintbrushToolPanel.cxx
+  GUI/Qt/Components/LabelPaintToolPanel.cxx
   GUI/Qt/Components/PolygonToolPanel.cxx
   GUI/Qt/Components/QActionButton.cxx
   GUI/Qt/Components/QColorButtonWidget.cxx
@@ -722,6 +727,7 @@ SET(UI_QT_CXX
   GUI/Qt/View/QtVTKInteractionDelegateWidget.cxx
   GUI/Qt/View/QtVTKRenderWindowBox.cxx
   GUI/Qt/View/PaintbrushInteractionMode.cxx
+  GUI/Qt/View/LabelPaintInteractionMode.cxx
   GUI/Qt/View/PolygonDrawingInteractionMode.cxx
   GUI/Qt/View/RegistrationInteractionMode.cxx
   GUI/Qt/View/SliceWindowInteractionDelegateWidget.cxx
@@ -789,6 +795,7 @@ SET(UI_MOC_HEADERS
   GUI/Qt/Components/MetadataInspector.h
   GUI/Qt/Components/GeneralLayerInspector.h
   GUI/Qt/Components/PaintbrushToolPanel.h
+  GUI/Qt/Components/LabelPaintToolPanel.h
   GUI/Qt/Components/PolygonToolPanel.h
   GUI/Qt/Components/QActionButton.h
   GUI/Qt/Components/QColorButtonWidget.h
@@ -826,6 +833,7 @@ SET(UI_MOC_HEADERS
   GUI/Qt/View/QtVTKInteractionDelegateWidget.h
   GUI/Qt/View/QtVTKRenderWindowBox.h
   GUI/Qt/View/PaintbrushInteractionMode.h
+  GUI/Qt/View/LabelPaintInteractionMode.h
   GUI/Qt/View/PolygonDrawingInteractionMode.h
   GUI/Qt/View/RegistrationInteractionMode.h
   GUI/Qt/View/SliceWindowInteractionDelegateWidget.h
@@ -917,6 +925,7 @@ SET(UI_FORMS
   GUI/Qt/Components/MetadataInspector.ui
   GUI/Qt/Components/GeneralLayerInspector.ui
   GUI/Qt/Components/PaintbrushToolPanel.ui
+  GUI/Qt/Components/LabelPaintToolPanel.ui
   GUI/Qt/Components/PolygonToolPanel.ui
   GUI/Qt/Components/QDoubleSliderWithEditor.ui
   GUI/Qt/Components/QtWarningDialog.ui

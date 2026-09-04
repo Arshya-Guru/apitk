@@ -46,6 +46,10 @@ public:
   // Getter and Setter for brush points
   irisGetSetMacro(BrushPoints, std::vector<Vector2d>)
 
+  // Get the effective paintbrush settings, which may differ from the global ones
+  // depending on deep learning mode (or which are supplied by a subclass)
+  virtual PaintbrushSettings GetEffectivePaintbrushSettings();
+
 protected:
   // Whether we are inverting the paintbrush when drawing
   bool m_ReverseMode;
@@ -70,14 +74,10 @@ protected:
   Vector3d ComputeOffset();
   void     ComputeMousePosition(const Vector3d &xSlice);
 
-  bool ApplyBrush(bool reverse_mode, bool dragging, bool release);
-  void CommitDrawing();
+  virtual bool ApplyBrush(bool reverse_mode, bool dragging, bool release);
+  virtual void CommitDrawing();
 
   bool ApplyBrushDeepLearning(bool reverse_mode);
-
-  // Get the effective paintbrush settings, which may differ from the global ones
-  // depending on deep learning mode
-  PaintbrushSettings GetEffectivePaintbrushSettings();
 
   GenericSliceModel      *m_Parent;
   BrushWatershedPipeline *m_Watershed;

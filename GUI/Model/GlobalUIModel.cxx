@@ -53,6 +53,8 @@
 #include <DisplayLayoutModel.h>
 #include <PaintbrushModel.h>
 #include <PaintbrushSettingsModel.h>
+#include <LabelPaintModel.h>
+#include <LabelPaintSettingsModel.h>
 #include "PolygonSettingsModel.h"
 #include <SynchronizationModel.h>
 #include <SnakeParameterModel.h>
@@ -106,6 +108,10 @@ GlobalUIModel::GlobalUIModel()
   m_PaintbrushSettingsModel = PaintbrushSettingsModel::New();
   m_PaintbrushSettingsModel->SetParentModel(this);
 
+  // Label paint settings
+  m_LabelPaintSettingsModel = LabelPaintSettingsModel::New();
+  m_LabelPaintSettingsModel->SetParentModel(this);
+
   // Registration model
   m_RegistrationModel = RegistrationModel::New();
   m_RegistrationModel->SetParentModel(this);
@@ -135,6 +141,9 @@ GlobalUIModel::GlobalUIModel()
 
     m_PaintbrushModel[i] = PaintbrushModel::New();
     m_PaintbrushModel[i]->SetParent(m_SliceModel[i]);
+
+    m_LabelPaintModel[i] = LabelPaintModel::New();
+    m_LabelPaintModel[i]->SetParent(m_SliceModel[i]);
 
     m_AnnotationModel[i] = AnnotationModel::New();
     m_AnnotationModel[i]->SetParent(m_SliceModel[i]);
