@@ -90,6 +90,19 @@ jobs:
           submodules: true
           path: 'vtk'
 
+      # VTK 9.3.1's bundled zlib/libpng and octree code fail with newer Apple
+      # SDKs/clang (see README, "VTK 9.3.1, with three source patches")
+      - name: Patch VTK for newer Apple SDKs (macOS)
+        if: ${{ steps.cache-vtk.outputs.cache-hit != 'true' && runner.os == 'macOS' }}
+        working-directory: ${{ github.workspace }}/vtk
+        shell: bash
+        run: |
+          sed -i '' 's/#if defined(MACOS) || defined(TARGET_OS_MAC)/#if defined(MACOS)/' ThirdParty/zlib/vtkzlib/zutil.h
+          sed -i '' 's/ || defined(TARGET_OS_MAC)//' ThirdParty/png/vtkpng/pngpriv.h
+          sed -i '' 's/this->_M_chilren\[/this->m_children[/' Utilities/octree/octree/octree_node.txx
+          ! grep -q 'TARGET_OS_MAC' ThirdParty/zlib/vtkzlib/zutil.h ThirdParty/png/vtkpng/pngpriv.h
+          ! grep -q '_M_chilren' Utilities/octree/octree/octree_node.txx
+
       - name: Build VTK
         if: steps.cache-vtk.outputs.cache-hit != 'true'
         uses: threeal/cmake-action@v2.0.0
