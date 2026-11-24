@@ -40,9 +40,12 @@ cmake --build build -t ITK-SNAP
 The program is the executable `build/ITK-SNAP` on both Linux and macOS.
 To launch it with an `apitk` command, see the platform sections below.
 
-**Don't want to build?** Prebuilt Windows, Linux and macOS packages are
-attached to each run of the **apitk build** workflow in the repo's Actions
-tab. See [Windows](#windows) for how to download them.
+**Don't want to build?** On Windows, download the ready-to-run
+[apitk-4.4.0-windows-x64.zip](https://github.com/Arshya-Guru/apitk/releases/download/apitk-win-preview-1/apitk-4.4.0-windows-x64.zip)
+from [Releases](https://github.com/Arshya-Guru/apitk/releases). No GitHub
+account is needed. Builds for Linux and macOS (and newer Windows builds) are
+attached to each run of the **apitk build** workflow. See
+[Windows](#windows) for details.
 
 ---
 
@@ -285,20 +288,19 @@ the fork and `itksnap` runs the official release.
 
 ## Windows
 
-### Easiest: download a prebuilt ZIP
+### Easiest: download a prebuilt ZIP (no GitHub account needed)
 
-Every push to the `apitk` branch runs the **apitk build** GitHub Actions
-workflow (`.github/workflows/apitk-build.yml`), which builds and tests apitk on
-Windows, Linux and Apple Silicon macOS.
+Download the portable Windows x64 build from the
+[Releases page](https://github.com/Arshya-Guru/apitk/releases):
 
-1. Open the repo's **Actions** tab, choose **apitk build**, then the latest
-   green run.
-2. Under **Artifacts**, download `apitk-windows-2022`. It contains
-   `itksnap-4.4.0-…-win64-AMD64.zip`.
-3. Unzip it anywhere, for example `C:\Tools\apitk`. No installer runs and
+**[apitk-4.4.0-windows-x64.zip](https://github.com/Arshya-Guru/apitk/releases/download/apitk-win-preview-1/apitk-4.4.0-windows-x64.zip)**
+(about 126 MB, from commit `2755b28e`). It has been checked on a real Windows
+machine, including Label Paint.
+
+1. Unzip it anywhere, for example `C:\Tools\apitk`. No installer runs and
    nothing is registered, so it never conflicts with a regular ITK-SNAP
    install in `C:\Program Files\ITK-SNAP 4.4`.
-4. Run `bin\ITK-SNAP.exe`, or use the `apitk` command:
+2. Run `bin\ITK-SNAP.exe`, or use the `apitk` command:
    - Add the unzipped `bin` folder to your `PATH` (Settings → System → About →
      Advanced system settings → Environment Variables → `Path` → New).
    - Open a new terminal and type `apitk` (runs `bin\apitk.bat`, which
@@ -307,13 +309,29 @@ Windows, Linux and Apple Silicon macOS.
 If it fails to start with a missing `VCRUNTIME140.dll` or `MSVCP140.dll`, run
 the `vc_redist.x64.exe` that ships in the same `bin` folder.
 
-The Linux (`apitk-ubuntu-22.04`, a `.tar.gz`) and macOS (`apitk-macos-15`, an
-unsigned `.dmg`) artifacts work the same way. On macOS, right-click → Open the
-first time, because the app isn't code-signed. Each run also uploads a
-`ctest-log-<os>` artifact with the test output.
+### Newer builds from GitHub Actions (needs a GitHub sign-in)
 
-> Artifacts are kept for 90 days. To build again without pushing, use
-> **Run workflow** on the **apitk build** page.
+Every push to the `apitk` branch runs the **apitk build** workflow
+(`.github/workflows/apitk-build.yml`). It builds and tests apitk on Windows,
+Linux and Apple Silicon macOS, and attaches the packages to the run. GitHub
+only lets signed-in users download these.
+
+1. Open the repo's **Actions** tab → **apitk build** → a finished run.
+2. On the run's **Summary** page (not an individual job page), scroll to
+   **Artifacts** at the bottom.
+3. Download `apitk-windows-2022` (the ZIP above), `apitk-ubuntu-22.04` (a
+   `.tar.gz`) or `apitk-macos-15` (an unsigned `.dmg`; right-click → Open the
+   first time, because it isn't code-signed). Each run also uploads
+   `ctest-log-<os>` with the test output.
+
+> Artifacts are kept for 90 days. To build without pushing, use **Run
+> workflow** on the **apitk build** page.
+
+> **Windows CI tests:** on GitHub's Windows machines, the tests that render
+> images crash (17 of 28) because the machines have no GPU, so the Windows
+> job shows red. The same thing happens with upstream ITK-SNAP's own workflow.
+> The packaged ZIP is still produced and works on real hardware. Linux and
+> macOS run the full test suite.
 
 ### Building from source on Windows
 
