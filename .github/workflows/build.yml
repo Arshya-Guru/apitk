@@ -27,8 +27,9 @@ on:
         type: boolean
         description: 'Upload a named release to SourceForge'
         required: false
-        default: false       
-  push:
+        default: false
+  # apitk: disabled on push (submits to upstream CDash/SourceForge); use apitk-build.yml
+  # push:
   # release:
   # types:
   #   - published

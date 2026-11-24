@@ -1682,6 +1682,9 @@ ELSEIF(WIN32)
     SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
   ENDIF(CMAKE_CL_64)
 
+  # apitk: ship an "apitk" command-line launcher next to ITK-SNAP.exe
+  INSTALL(PROGRAMS ${SNAP_SOURCE_DIR}/Utilities/Win32/apitk.bat DESTINATION bin)
+
   # Give it a windowsy directory name
   SET(CPACK_PACKAGE_INSTALL_DIRECTORY "ITK-SNAP ${SNAP_VERSION_MAJOR}.${SNAP_VERSION_MINOR}")
   

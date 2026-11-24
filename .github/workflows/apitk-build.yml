@@ -1,0 +1,236 @@
+name: apitk build
+
+# Builds apitk on Windows, Linux and Apple Silicon macOS, runs the test suite,
+# and uploads downloadable packages as workflow artifacts.
+# Unlike upstream's build.yml, this does NOT submit to the ITK-SNAP CDash
+# dashboard, code-sign, or upload to SourceForge.
+
+on:
+  push:
+    branches: [ apitk ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-2022, ubuntu-22.04, macos-14 ]
+        itk_ver: [ 'v5.4.0' ]
+        vtk_ver: [ '9.3.1' ]
+        qt_ver: [ '6.8.1' ]
+        include:
+          - os: ubuntu-22.04
+            qt_host: linux
+            qt_arch: linux_gcc_64
+            ctest_cmd: xvfb-run -a ctest
+            cpack_gen: TGZ
+          - os: macos-14
+            qt_host: mac
+            qt_arch: clang_64
+            ctest_cmd: ctest
+            cpack_gen: Bundle
+          - os: windows-2022
+            qt_host: windows
+            qt_arch: win64_msvc2022_64
+            ctest_cmd: ctest
+            # Portable ZIP so it never collides with a regular ITK-SNAP install
+            cpack_gen: ZIP
+
+    steps:
+      - name: Select MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ runner.os == 'Windows' }}
+
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Install system packages
+        uses: ConorMacBride/install-package@v1
+        with:
+          brew: libssh
+          apt: libcurl4-openssl-dev libssh-dev xvfb
+
+      - name: Install libcurl/libssh on Windows
+        uses: johnwason/vcpkg-action@v6
+        id: vcpkg
+        if: ${{ runner.os == 'Windows' }}
+        with:
+          pkgs: curl libssh zlib
+          triplet: x64-windows-release
+          token: ${{ github.token }}
+          github-binarycache: false
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt_ver }}
+          target: 'desktop'
+          host: ${{ matrix.qt_host }}
+          arch: ${{ matrix.qt_arch }}
+          cache: true
+          extra: '--timeout 60'
+
+      # ---------------- VTK (cache key shared with upstream build.yml) ----------------
+      - name: Restore VTK cache
+        id: cache-vtk
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ github.workspace }}/vtk/install
+          key: ${{ matrix.os }}-vtk-${{ matrix.vtk_ver }}
+
+      - name: Checkout VTK
+        if: steps.cache-vtk.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: 'Kitware/VTK.git'
+          ref: v${{ matrix.vtk_ver }}
+          submodules: true
+          path: 'vtk'
+
+      - name: Build VTK
+        if: steps.cache-vtk.outputs.cache-hit != 'true'
+        uses: threeal/cmake-action@v2.0.0
+        with:
+          source-dir: ${{ github.workspace }}/vtk
+          build-dir: ${{ github.workspace }}/vtk/build
+          build-args: "-t install -- -k 0"
+          generator: Ninja
+          options: |
+            BUILD_TESTING:BOOL=FALSE
+            BUILD_EXAMPLES:BOOL=FALSE
+            BUILD_SHARED_LIBS:BOOL=FALSE
+            VTK_REQUIRED_OBJCXX_FLAGS:STRING=
+            VTK_GROUP_ENABLE_Qt:STRING=YES
+            VTK_MODULE_ENABLE_VTK_GUISupportQtQuick:STRING=NO
+            VTK_MODULE_ENABLE_VTK_GUISupportQtSQL:STRING=NO
+            VTK_MODULE_ENABLE_VTK_RenderingExternal:STRING=WANT
+            CMAKE_BUILD_TYPE=Release
+            CMAKE_INSTALL_PREFIX=${{ github.workspace }}/vtk/install
+            ${{ runner.os == 'Windows' && 'VTK_SMP_ENABLE_STDTHREAD=OFF' || '' }}
+
+      - name: Save VTK cache
+        if: steps.cache-vtk.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ github.workspace }}/vtk/install
+          key: ${{ matrix.os }}-vtk-${{ matrix.vtk_ver }}
+
+      # ---------------- ITK (build dir is cached; its install misses a file) ----------------
+      - name: Restore ITK cache
+        id: cache-itk
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ github.workspace }}/itk
+          key: ${{ matrix.os }}-itk-${{ matrix.itk_ver }}-build
+
+      - name: Checkout ITK
+        if: steps.cache-itk.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: 'InsightSoftwareConsortium/ITK.git'
+          ref: ${{ matrix.itk_ver }}
+          submodules: true
+          path: 'itk'
+
+      - name: Build ITK
+        if: steps.cache-itk.outputs.cache-hit != 'true'
+        uses: threeal/cmake-action@v2.0.0
+        with:
+          source-dir: ${{ github.workspace }}/itk
+          build-dir: ${{ github.workspace }}/itk/build
+          build-args: |
+            -t
+            install
+          generator: Ninja
+          options: |
+            BUILD_TESTING:BOOL=FALSE
+            BUILD_EXAMPLES:BOOL=FALSE
+            Module_MorphologicalContourInterpolation:BOOL=TRUE
+            CMAKE_BUILD_TYPE=Release
+            CMAKE_INSTALL_PREFIX=${{ github.workspace }}/itk/install
+            ${{ runner.os == 'Windows' && 'CMAKE_EXE_LINKER_FLAGS=/FORCE:MULTIPLE' || '' }}
+            ${{ runner.os == 'Windows' && 'CMAKE_EXE_SHARED_FLAGS=/FORCE:MULTIPLE' || '' }}
+
+      - name: Save ITK cache
+        if: steps.cache-itk.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ github.workspace }}/itk
+          key: ${{ matrix.os }}-itk-${{ matrix.itk_ver }}-build
+
+      # ---------------- apitk ----------------
+      - name: Checkout apitk
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          path: apitk
+          persist-credentials: false
+
+      - name: Configure apitk
+        uses: threeal/cmake-action@v2.0.0
+        with:
+          source-dir: ${{ github.workspace }}/apitk
+          build-dir: ${{ github.workspace }}/apitk/build
+          generator: Ninja
+          run-build: false
+          args: ${{ runner.os == 'Windows' && steps.vcpkg.outputs.vcpkg-cmake-config || '' }}
+          options: |
+            ITK_DIR=${{ github.workspace }}/itk/build
+            VTK_DIR=${{ github.workspace }}/vtk/install/lib/cmake/vtk-9.3
+            CMAKE_BUILD_TYPE=Release
+            ${{ runner.os == 'Windows' && format('CURL_LIBRARY={0}/vcpkg/installed/x64-windows-release/lib/libcurl.lib', github.workspace) || '' }}
+            ${{ runner.os == 'Windows' && format('CURL_INCLUDE_DIR={0}/vcpkg/installed/x64-windows-release/include', github.workspace) || '' }}
+            ${{ runner.os == 'Windows' && 'CMAKE_EXE_LINKER_FLAGS=/FORCE:MULTIPLE' || '' }}
+            ${{ runner.os == 'Windows' && 'CMAKE_EXE_SHARED_FLAGS=/FORCE:MULTIPLE' || '' }}
+            ${{ runner.os == 'macOS' && 'CMAKE_OSX_DEPLOYMENT_TARGET=12.6' || '' }}
+
+      - name: Build apitk
+        working-directory: ${{ github.workspace }}/apitk/build
+        shell: bash
+        run: cmake --build .
+
+      - name: Put libcurl DLLs on PATH (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: echo "${{ github.workspace }}/vcpkg/installed/x64-windows-release/bin" >> $GITHUB_PATH
+
+      # Tests run locally in the job; nothing is submitted anywhere.
+      - name: Run tests
+        id: tests
+        continue-on-error: true
+        working-directory: ${{ github.workspace }}/apitk/build
+        shell: bash
+        run: ${{ matrix.ctest_cmd }} --output-on-failure 2>&1 | tee ctest.log; exit ${PIPESTATUS[0]}
+
+      - name: Package
+        working-directory: ${{ github.workspace }}/apitk/build
+        shell: bash
+        run: cpack -G ${{ matrix.cpack_gen }}
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: apitk-${{ matrix.os }}
+          path: |
+            ${{ github.workspace }}/apitk/build/itksnap-*.zip
+            ${{ github.workspace }}/apitk/build/itksnap-*.tar.gz
+            ${{ github.workspace }}/apitk/build/itksnap-*.dmg
+          if-no-files-found: error
+
+      - name: Upload test log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctest-log-${{ matrix.os }}
+          path: ${{ github.workspace }}/apitk/build/ctest.log
+          if-no-files-found: ignore
+
+      - name: Fail job if tests failed
+        if: ${{ steps.tests.outcome != 'success' }}
+        shell: bash
+        run: |
+          echo "::error::Some tests failed; see the ctest-log-${{ matrix.os }} artifact."
+          exit 1
