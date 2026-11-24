@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2022, ubuntu-22.04, macos-14 ]
+        os: [ windows-2022, ubuntu-22.04, macos-15 ]
         itk_ver: [ 'v5.4.0' ]
         vtk_ver: [ '9.3.1' ]
         qt_ver: [ '6.8.1' ]
@@ -27,7 +27,7 @@ jobs:
             qt_arch: linux_gcc_64
             ctest_cmd: xvfb-run -a ctest
             cpack_gen: TGZ
-          - os: macos-14
+          - os: macos-15
             qt_host: mac
             qt_arch: clang_64
             ctest_cmd: ctest

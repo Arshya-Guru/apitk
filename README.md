@@ -307,7 +307,7 @@ Windows, Linux and Apple Silicon macOS.
 If it fails to start with a missing `VCRUNTIME140.dll` or `MSVCP140.dll`, run
 the `vc_redist.x64.exe` that ships in the same `bin` folder.
 
-The Linux (`apitk-ubuntu-22.04`, a `.tar.gz`) and macOS (`apitk-macos-14`, an
+The Linux (`apitk-ubuntu-22.04`, a `.tar.gz`) and macOS (`apitk-macos-15`, an
 unsigned `.dmg`) artifacts work the same way. On macOS, right-click → Open the
 first time, because the app isn't code-signed. Each run also uploads a
 `ctest-log-<os>` artifact with the test output.
